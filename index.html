@@ -1,49 +1,42 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8" />
-  <title>Copiando Mensagem</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 50px;
-    }
-    #mensagem {
-      margin-top: 20px;
-      padding: 15px;
-      background-color: #f0f0f0;
-      border-radius: 10px;
-      display: inline-block;
-      max-width: 90%;
-      white-space: pre-wrap;
-      font-size: 1.1em;
-    }
-  </style>
-</head>
-<body>
-  <h2>Mensagem copiada!</h2>
-  <div id="mensagem">Carregando...</div>
+<h2>Mensagem copiada!</h2>
+<div id="mensagem">Carregando...</div>
+<button id="btnCopiar" style="margin-top: 20px; padding: 10px 20px; font-size: 1em;">
+  Copiar mensagem novamente
+</button>
 
-  <script>
-    window.onload = function () {
-      const urlParams = new URLSearchParams(window.location.search);
-      const msg = urlParams.get("msg");
-      const display = document.getElementById("mensagem");
-      if (msg) {
-        display.textContent = decodeURIComponent(msg);
-        // Copiar automaticamente:
-        navigator.clipboard.writeText(decodeURIComponent(msg)).then(() => {
-          console.log("Mensagem copiada para a área de transferência");
+<script>
+  window.onload = function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const msg = urlParams.get("msg");
+    const display = document.getElementById("mensagem");
+    const btnCopiar = document.getElementById("btnCopiar");
+
+    if (msg) {
+      const decodedMsg = decodeURIComponent(msg);
+      display.textContent = decodedMsg;
+
+      // Copiar automaticamente ao abrir
+      navigator.clipboard.writeText(decodedMsg).then(() => {
+        console.log("Mensagem copiada para a área de transferência");
+      }).catch(() => {
+        console.log("Falha ao copiar para a área de transferência");
+      });
+
+      // Botão para copiar manualmente quando quiser
+      btnCopiar.onclick = () => {
+        navigator.clipboard.writeText(decodedMsg).then(() => {
+          alert("Mensagem copiada!");
         }).catch(() => {
-          console.log("Falha ao copiar para a área de transferência");
+          alert("Falha ao copiar mensagem.");
         });
-        // Fecha a aba após 2 segundos (opcional)
-        setTimeout(() => window.close(), 2000);
-      } else {
-        display.textContent = "Nenhuma mensagem recebida.";
-      }
-    };
-  </script>
-</body>
-</html>
+      };
+
+      // Se não quiser fechar a aba automaticamente, comente a linha abaixo:
+      // setTimeout(() => window.close(), 2000);
+
+    } else {
+      display.textContent = "Nenhuma mensagem recebida.";
+      btnCopiar.style.display = "none"; // Esconde o botão se não tem mensagem
+    }
+  };
+</script>
