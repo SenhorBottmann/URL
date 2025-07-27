@@ -1,51 +1,49 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Copiando Mensagem</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
       text-align: center;
+      margin-top: 50px;
     }
-    .mensagem {
-      background-color: #f0f0f0;
-      padding: 15px;
-      border-radius: 10px;
+    #mensagem {
       margin-top: 20px;
+      padding: 15px;
+      background-color: #f0f0f0;
+      border-radius: 10px;
       display: inline-block;
+      max-width: 90%;
+      white-space: pre-wrap;
+      font-size: 1.1em;
     }
   </style>
 </head>
 <body>
   <h2>Mensagem copiada!</h2>
-  <div class="mensagem" id="mensagem"></div>
+  <div id="mensagem">Carregando...</div>
 
   <script>
-    function getMensagem() {
+    window.onload = function () {
       const urlParams = new URLSearchParams(window.location.search);
-      return decodeURIComponent(urlParams.get('mensagem') || '');
-    }
-
-    function copiarTexto(texto) {
-      const input = document.createElement('textarea');
-      input.value = texto;
-      document.body.appendChild(input);
-      input.select();
-      document.execCommand('copy');
-      document.body.removeChild(input);
-    }
-
-    const mensagem = getMensagem();
-    if (mensagem) {
-      document.getElementById('mensagem').textContent = mensagem;
-      copiarTexto(mensagem);
-      // Aguarda 2 segundos e fecha a aba
-      setTimeout(() => window.close(), 2000);
-    } else {
-      document.getElementById('mensagem').textContent = 'Nenhuma mensagem recebida.';
-    }
+      const msg = urlParams.get("msg");
+      const display = document.getElementById("mensagem");
+      if (msg) {
+        display.textContent = decodeURIComponent(msg);
+        // Copiar automaticamente:
+        navigator.clipboard.writeText(decodeURIComponent(msg)).then(() => {
+          console.log("Mensagem copiada para a área de transferência");
+        }).catch(() => {
+          console.log("Falha ao copiar para a área de transferência");
+        });
+        // Fecha a aba após 2 segundos (opcional)
+        setTimeout(() => window.close(), 2000);
+      } else {
+        display.textContent = "Nenhuma mensagem recebida.";
+      }
+    };
   </script>
 </body>
 </html>
